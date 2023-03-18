@@ -1,11 +1,11 @@
 import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
-import icon from '../../assets/icon.svg';
 import './App.css';
+import Controls from '../components/controls';
 
-function Hello() {
+function Main() {
   return (
     <div>
-      <h1>max app</h1>
+      <Controls name={''}/>
     </div>
   );
 }
@@ -14,7 +14,7 @@ export default function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Hello />} />
+        <Route path="/" element={<Main />} />
       </Routes>
     </Router>
   );
