@@ -1,4 +1,16 @@
+body{
+    background-color:black;
+    color: white;
+    font-family: "Lucida Console";
+}
+
+#title{
+    color:#1DB954;
+    -webkit-app-region: drag;
+}
+
 #controlsContainer{
+    text-align: center;
     position: absolute;
     top: 0;
     left: 0;
@@ -8,5 +20,87 @@
     justify-content: center;
     align-items: center;
     z-index: 1;
+}
+
+.buttons{
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    size: 50px;
+    padding-right:35px
+}
+
+.continue_spotify{
+    text-align: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+#album_cover{
+    width: 300px;
+    height: 300px;
     -webkit-app-region: drag;
 }
+
+#top_container{
+    display: flex;
+    align-items: center;
+    justify-content:space-around;
+    width: 100vw;
+}
+
+.button_images{
+    width: 45px;
+    height: 45px;
+    color: white;
+    background-color: transparent;
+}
+
+#artist_text{
+    font-size: large;
+}
+
+.buttons{
+    margin:5%;
+}
+
+#buttons_and_progress{
+    width:45%;
+}
+
+
+.buttons:hover{
+    transform: scale(1.2); /* increase the size by 20% */
+}
+
+
+#bottom_container{
+    margin-top:1%;
+}
+
+  .progress {
+  border: 1px solid #eee;
+  height: 6px;
+  border-radius: 3px;
+  overflow: hidden;
+  width:100%;
+  margin-left:-5%;
+  margin-top:10%;
+
+}
+.progress__bar {
+  background-color: #eee;
+  height: 4px;
+}
+

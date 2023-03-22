@@ -15,5 +15,6 @@
     "allowJs": true,
     "outDir": ".erb/dll"
   },
+  "include": ["react-spotify-auth.d.ts", "src"],
   "exclude": ["test", "release/build", "release/app/dist", ".erb/dll"]
 }
