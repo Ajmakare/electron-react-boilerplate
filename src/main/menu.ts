@@ -18,6 +18,8 @@ export default class MenuBuilder {
     this.mainWindow = mainWindow;
   }
 
+  
+
   buildMenu(): Menu {
     if (
       process.env.NODE_ENV === 'development' ||
@@ -25,6 +27,7 @@ export default class MenuBuilder {
     ) {
       this.setupDevelopmentEnvironment();
     }
+    
 
     const template =
       process.platform === 'darwin'
@@ -281,8 +284,25 @@ export default class MenuBuilder {
               shell.openExternal('https://github.com/electron/electron/issues');
             },
           },
+          
         ],
       },
+      {
+        label: 'Developer',
+        submenu: [
+          {
+            label: 'Open Developer Tools',
+            click: () => {
+              if (this.mainWindow) {
+                this.mainWindow.webContents.openDevTools();
+              }
+            },
+            accelerator: 'CmdOrCtrl+Shift+I',
+          },
+          
+        ],
+      },
+      
     ];
 
     return templateDefault;

@@ -104,3 +104,29 @@ body{
   height: 4px;
 }
 
+.liked{
+    color: #FF6863;
+    transform: scale(1.1); /* increase the size by 20% */
+}
+
+.not-liked{
+    color: white;
+}
+
+.liked:hover{
+    transform: scale(1.2); /* increase the size by 20% */
+}
+
+.not-liked:hover{
+    transform: scale(1.2); /* increase the size by 20% */
+}
+
+#like_button{
+    padding-top:8%;
+    margin-right: 10%;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+}
+
+

@@ -5,9 +5,11 @@ const container = document.getElementById('root')!;
 const root = createRoot(container);
 root.render(<App />);
 
-// calling IPC exposed from preload script
-window.electron.ipcRenderer.once('ipc-example', (arg) => {
-  // eslint-disable-next-line no-console
-  console.log(arg);
+// Listen for the 'open-url' event
+window.electron.ipcRenderer.on('open-url', (...args: unknown[]) => {
+  const url = args[0] as string;
+  // Handle the OAuth2 callback URL here
+  console.log('Callback URL:', url);
 });
+
 window.electron.ipcRenderer.sendMessage('ipc-example', ['ping']);

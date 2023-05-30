@@ -9,11 +9,12 @@
  * `./src/main.js` using webpack. This gives us some performance wins.
  */
 import path from 'path';
-import { app, BrowserWindow, shell, ipcMain } from 'electron';
+import { app, BrowserWindow, shell, ipcMain, protocol } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
+const url = require('url');
 
 class AppUpdater {
   constructor() {
@@ -69,20 +70,47 @@ const createWindow = async () => {
     return path.join(RESOURCES_PATH, ...paths);
   };
 
+
   mainWindow = new BrowserWindow({
     show: false,
     width: 800,
     height: 480,
     frame: false,
+    resizable: false,
     icon: getAssetPath('icon.png'),
     webPreferences: {
       preload: app.isPackaged
         ? path.join(__dirname, 'preload.js')
         : path.join(__dirname, '../../.erb/dll/preload.js'),
+      devTools: true, // <-- enable dev tools
+      nodeIntegration: true,
+      contextIsolation: false,
     },
   });
 
-  mainWindow.loadURL('http://localhost:1212');
+  // Listen for the OAuth2 callback URL
+  ipcMain.on('open-url', (event, url) => {
+    // Handle the OAuth2 callback URL here
+    console.log('Callback URL:', url);
+  });
+
+
+  const fileUrl = url.format({
+    pathname: path.join(__dirname, '..', 'renderer', 'index.html'),
+    protocol: 'file:',
+    slashes: true,
+  });
+
+  console.log('Loading packaged file URL:', fileUrl);
+  if(app.isPackaged){
+    mainWindow.loadURL(fileUrl);
+  }
+  else{
+    const devUrl = 'http://10.0.0.123:1212';
+    console.log('Loading dev URL:', devUrl);
+  
+    mainWindow.loadURL(devUrl);    // mainWindow.loadURL(resolveHtmlPath('index.html'));
+  }
 
   mainWindow.on('ready-to-show', () => {
     if (!mainWindow) {
@@ -102,9 +130,9 @@ const createWindow = async () => {
   const menuBuilder = new MenuBuilder(mainWindow);
   menuBuilder.buildMenu();
 
-  // Open urls in the user's browser
-  mainWindow.webContents.setWindowOpenHandler((edata) => {
-    shell.openExternal(edata.url);
+  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+    // Open urls in the user's browser
+    shell.openExternal(url);
     return { action: 'deny' };
   });
 
@@ -125,14 +153,22 @@ app.on('window-all-closed', () => {
   }
 });
 
-app
-  .whenReady()
-  .then(() => {
-    createWindow();
-    app.on('activate', () => {
-      // On macOS it's common to re-create a window in the app when the
-      // dock icon is clicked and there are no other windows open.
-      if (mainWindow === null) createWindow();
-    });
-  })
-  .catch(console.log);
+app.whenReady().then(() => {
+  protocol.registerHttpProtocol('spotify-sensor-panel', (request, callback) => {
+    const url = request.url.substr(26); // remove 'spotify-sensor-panel://' from the URL
+    mainWindow!.webContents.send('authCode', url); // send the URL back to renderer process via IPC
+  });
+  createWindow();
+
+  app.on('activate', () => {
+    // On macOS it's common to re-create a window in the app when the
+    // dock icon is clicked and there are no other windows open.
+    if (mainWindow === null) {
+      createWindow();
+    }
+  });
+
+  app.on('open-url', (event, url) => {
+    console.log('open-url event:', url);
+  });
+}).catch(console.log);
